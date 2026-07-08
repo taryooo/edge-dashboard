@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>構造エッジ・ダッシュボード</title>
+<meta name="description" content="構造エッジ投資の運用ダッシュボード。閾値到達の可視化と判断材料の整理。">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12161c" media="(prefers-color-scheme: dark)">
+<style>
+:root {
+  --bg: #f4f5f7;
+  --panel: #ffffff;
+  --panel2: #eceef1;
+  --text: #23272e;
+  --muted: #6b7280;
+  --border: #d9dce1;
+  --accent: #3459a6;
+  --amber-bg: #f6e8c8;
+  --amber-fg: #8a5d00;
+  --amber-bar: #d99a1f;
+  --red-bg: #f3d5d2;
+  --red-fg: #9c2f27;
+  --red-bar: #c4453b;
+  --ok-bar: #4a7d5f;
+  --star: #b8860b;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12161c;
+    --panel: #1a2029;
+    --panel2: #222a35;
+    --text: #dde2e9;
+    --muted: #8b95a3;
+    --border: #303945;
+    --accent: #7aa2f7;
+    --amber-bg: #3a2f14;
+    --amber-fg: #e0b04f;
+    --amber-bar: #c99422;
+    --red-bg: #3d1f1c;
+    --red-fg: #e5837b;
+    --red-bar: #c4534a;
+    --ok-bar: #5f9b78;
+    --star: #d9b13b;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { font-size: 16px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.6;
+  padding-bottom: calc(64px + env(safe-area-inset-bottom));
+}
+header {
+  padding: 14px 16px 10px;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+}
+header h1 { font-size: 1.05rem; font-weight: 700; letter-spacing: .02em; }
+#asof { font-size: .72rem; color: var(--muted); text-align: right; }
+main { max-width: 760px; margin: 0 auto; padding: 0 12px; }
+section.view { display: none; }
+section.view.active { display: block; }
+.card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px; margin-bottom: 12px;
+}
+.card h2 { font-size: .95rem; margin-bottom: 8px; }
+.card h3 { font-size: .85rem; margin: 10px 0 4px; }
+.note { font-size: .75rem; color: var(--muted); }
+
+/* ---- タブ ---- */
+nav.tabs {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+  display: flex; background: var(--panel);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+nav.tabs button {
+  flex: 1; padding: 12px 0 10px; background: none; border: none;
+  font-size: .85rem; color: var(--muted); cursor: pointer;
+  border-top: 2px solid transparent; font-family: inherit;
+}
+nav.tabs button.active { color: var(--accent); border-top-color: var(--accent); font-weight: 700; }
+
+/* ---- 監視盤 ---- */
+.toolbar { display: flex; gap: 8px; align-items: center; margin: 4px 0 10px; flex-wrap: wrap; }
+.toolbar .seg { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.toolbar .seg button {
+  padding: 6px 12px; border: none; background: var(--panel); color: var(--muted);
+  font-size: .8rem; cursor: pointer; font-family: inherit;
+}
+.toolbar .seg button.active { background: var(--accent); color: #fff; }
+.group-label {
+  font-size: .78rem; color: var(--muted); font-weight: 700;
+  margin: 14px 2px 6px; letter-spacing: .03em;
+}
+table.watch { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+table.watch { display: block; }
+table.watch tbody { display: block; }
+table.watch tr { display: grid; grid-template-columns: 1fr 5.2em 5.6em; align-items: center; border-bottom: 1px solid var(--border); cursor: pointer; }
+table.watch tr:last-child { border-bottom: none; }
+table.watch tr.detail-row { display: block; cursor: default; background: var(--panel2); }
+table.watch td { padding: 9px 10px; font-size: .85rem; }
+td.namecell .nm { font-weight: 600; }
+td.namecell .moat { font-size: .72rem; color: var(--muted); display: block; }
+td.ddcell { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+td.stcell { text-align: center; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .7rem; font-weight: 700; white-space: nowrap; }
+.badge.amber { background: var(--amber-bg); color: var(--amber-fg); }
+.badge.red { background: var(--red-bg); color: var(--red-fg); }
+.badge.none { color: var(--muted); }
+.star { color: var(--star); margin-right: 2px; }
+tr.hit-amber td.ddcell { color: var(--amber-fg); }
+tr.hit-red td.ddcell { color: var(--red-fg); }
+.detail { padding: 10px 12px; font-size: .8rem; }
+.detail dl { display: grid; grid-template-columns: 7.5em 1fr; gap: 2px 8px; margin-bottom: 8px; }
+.detail dt { color: var(--muted); }
+.detail dd { font-variant-numeric: tabular-nums; }
+.detail textarea {
+  width: 100%; min-height: 60px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--panel); color: var(--text); padding: 8px; font-family: inherit; font-size: .8rem;
+}
+.detail .memo-label { font-size: .72rem; color: var(--muted); margin-bottom: 3px; display: block; }
+
+/* ---- ファイナンス ---- */
+.frow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 0; flex-wrap: wrap; }
+.frow label { font-size: .85rem; }
+input[type="number"], input[type="text"], select {
+  border: 1px solid var(--border); border-radius: 8px; background: var(--panel);
+  color: var(--text); padding: 7px 9px; font-size: .9rem; font-family: inherit;
+  max-width: 10em; text-align: right;
+}
+select { text-align: left; max-width: 100%; }
+button.btn {
+  background: var(--accent); color: #fff; border: none; border-radius: 8px;
+  padding: 8px 14px; font-size: .85rem; cursor: pointer; font-family: inherit;
+}
+button.btn.ghost { background: var(--panel2); color: var(--text); border: 1px solid var(--border); }
+button.btn.danger-ghost { background: none; color: var(--red-fg); border: none; font-size: .8rem; padding: 4px 8px; }
+.alloc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
+.alloc-grid > div { text-align: center; }
+.alloc-grid label { display: block; font-size: .72rem; color: var(--muted); }
+.alloc-grid input { width: 100%; max-width: none; text-align: center; }
+.alloc-warn { color: var(--red-fg); font-size: .75rem; }
+.pbar { height: 10px; background: var(--panel2); border-radius: 999px; overflow: hidden; margin: 6px 0 2px; }
+.pbar > div { height: 100%; background: var(--ok-bar); border-radius: 999px; transition: width .2s; }
+.pbar.over > div { background: var(--red-bar); }
+ul.holdings { list-style: none; }
+ul.holdings li {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 7px 0; border-bottom: 1px solid var(--border); font-size: .85rem;
+}
+ul.holdings li:last-child { border-bottom: none; }
+.hold-add { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+.hold-add select { flex: 1 1 10em; }
+.hold-add input { flex: 0 1 8em; }
+.kv { display: flex; justify-content: space-between; font-size: .9rem; padding: 4px 0; }
+.kv .v { font-variant-numeric: tabular-nums; font-weight: 700; }
+.io-row { display: flex; gap: 8px; margin-top: 8px; }
+
+/* ---- 方針 ---- */
+.policy .card ul { padding-left: 1.2em; font-size: .85rem; }
+.policy .card li { margin: 3px 0; }
+.policy .lead { font-size: .85rem; margin-bottom: 6px; }
+
+footer { text-align: center; font-size: .7rem; color: var(--muted); padding: 18px 12px 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>構造エッジ・ダッシュボード</h1>
+  <div id="asof">価格データ読込中…</div>
+</header>
+
+<main>
+  <!-- ============ 監視盤 ============ -->
+  <section class="view active" id="view-watch">
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="並び替え">
+        <button id="sort-type" class="active">型順</button>
+        <button id="sort-dd">下落率順</button>
+      </div>
+      <span class="note">−25%到達＝打診圏／−40%到達＝二段目圏</span>
+    </div>
+    <div id="watch-container"></div>
+  </section>
+
+  <!-- ============ ファイナンス ============ -->
+  <section class="view" id="view-finance">
+    <div class="card">
+      <h2>入金と配分</h2>
+      <div class="frow">
+        <label for="in-monthly">月次入金額（円）</label>
+        <input type="number" id="in-monthly" min="0" step="1000" inputmode="numeric">
+      </div>
+      <h3>配分（％）</h3>
+      <div class="alloc-grid">
+        <div><label for="in-core">コア</label><input type="number" id="in-core" min="0" max="100" inputmode="numeric"></div>
+        <div><label for="in-sat">サテライト</label><input type="number" id="in-sat" min="0" max="100" inputmode="numeric"></div>
+        <div><label for="in-cash">待機枠</label><input type="number" id="in-cash" min="0" max="100" inputmode="numeric"></div>
+      </div>
+      <div id="alloc-sum" class="note" style="margin-top:6px;"></div>
+    </div>
+
+    <div class="card">
+      <h2>待機枠残高</h2>
+      <div class="frow">
+        <label for="in-cashbal">現在の残高（円）</label>
+        <input type="number" id="in-cashbal" min="0" step="1000" inputmode="numeric">
+      </div>
+      <p class="note">出動時の目安：−25%到達で残高の1/3まで、−40%到達で残り。</p>
+      <div class="kv"><span>−25%出動の上限（残高の1/3）</span><span class="v" id="cash-third">—</span></div>
+    </div>
+
+    <div class="card">
+      <h2>保有銘柄</h2>
+      <ul class="holdings" id="holdings-list"></ul>
+      <div class="hold-add">
+        <select id="hold-ticker"></select>
+        <select id="hold-role" style="flex:0 1 8em;">
+          <option value="core">コア</option>
+          <option value="satellite">サテライト</option>
+        </select>
+        <input type="number" id="hold-cost" placeholder="取得額（円）" min="0" step="1000" inputmode="numeric">
+        <button class="btn" id="hold-add-btn">追加</button>
+      </div>
+      <div class="kv" style="margin-top:10px;"><span>取得額合計</span><span class="v" id="hold-total">—</span></div>
+    </div>
+
+    <div class="card">
+      <h2>サテライト比率</h2>
+      <div class="frow">
+        <label for="in-satmax">上限（％）</label>
+        <input type="number" id="in-satmax" min="0" max="100" inputmode="numeric">
+      </div>
+      <div class="pbar" id="sat-bar"><div></div></div>
+      <div class="kv"><span>現在値（取得額ベース）</span><span class="v" id="sat-now">—</span></div>
+      <p class="note">サテライト取得額 ÷ 保有取得額合計。上限超過で警告色。</p>
+    </div>
+
+    <div class="card">
+      <h2>データの持ち出し</h2>
+      <p class="note">個人データはこの端末のlocalStorageのみに保存され、外部送信はありません。</p>
+      <div class="io-row">
+        <button class="btn ghost" id="btn-export">JSONエクスポート</button>
+        <button class="btn ghost" id="btn-import">インポート</button>
+        <input type="file" id="import-file" accept="application/json" hidden>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 方針 ============ -->
+  <section class="view policy" id="view-policy">
+    <div class="card">
+      <h2>基本原則</h2>
+      <p class="lead">構造的に不可代替な企業を長期保有する。売買の引き金は価格でなくルール。このダッシュボードは閾値到達を機械的に可視化するだけで、売買の推奨はしない。</p>
+    </div>
+    <div class="card">
+      <h2>撤退条件（堀の毀損シグナル）</h2>
+      <ul>
+        <li><strong>型A（工程チョークポイント）</strong>：フロー規律の輸入・暗黙知漏出・技術者流出</li>
+        <li><strong>型B（国家アーキテクチャ）</strong>：政治の反転</li>
+        <li><strong>型C（検証層）</strong>：検証の信用毀損</li>
+        <li><strong>型D（駆動進行中）</strong>：外部検証の途絶</li>
+      </ul>
+      <p class="note" style="margin-top:6px;">発火したら降りる。株価水準は撤退判断の材料にしない。</p>
+    </div>
+    <div class="card">
+      <h2>出動ルール（フロー起因の暴落時）</h2>
+      <ul>
+        <li>52週高値から<strong>−25%</strong>到達：待機枠の<strong>1/3まで</strong>で打診買い</li>
+        <li>52週高値から<strong>−40%</strong>到達：待機枠の<strong>残り</strong>を投入</li>
+      </ul>
+      <p class="note" style="margin-top:6px;">出動前に撤退条件が発火していないことを必ず確認する（構造起因の下落には出動しない）。</p>
+    </div>
+    <div class="card">
+      <h2>禁じ手</h2>
+      <ul>
+        <li>レバレッジ・信用取引</li>
+        <li>短期売買</li>
+        <li>撤退条件の発火後の様子見</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs">
+  <button data-view="watch" class="active">監視盤</button>
+  <button data-view="finance">ファイナンス</button>
+  <button data-view="policy">方針</button>
+</nav>
+
+<footer>本ツールは判断材料の整理であり投資勧誘・助言ではない</footer>
+
+<script>
+"use strict";
+
+/* ================= 状態 ================= */
+const LS_KEY = "edge-dashboard:v1";
+const DEFAULT_STATE = {
+  monthly: 0,
+  alloc: { core: 50, satellite: 20, cash: 30 },
+  cashBalance: 0,
+  holdings: [],            // {ticker, role: "core"|"satellite", cost}
+  satMax: 30,
+  memos: {}                // ticker -> text
+};
+let state = loadState();
+let watchlist = [];
+let prices = {};           // ticker -> {close, high52, drawdown_pct, asof} | null
+let sortMode = "type";     // "type" | "dd"
+let openTicker = null;
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return structuredClone(DEFAULT_STATE);
+    const parsed = JSON.parse(raw);
+    return Object.assign(structuredClone(DEFAULT_STATE), parsed);
+  } catch (e) {
+    return structuredClone(DEFAULT_STATE);
+  }
+}
+function saveState() { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+/* ================= 判定ロジック ================= */
+const TYPE_LABELS = {
+  A: "型A｜工程チョークポイント",
+  B: "型B｜国家アーキテクチャ",
+  C: "型C｜検証層",
+  D: "型D｜駆動進行中"
+};
+function statusOf(dd) {
+  if (dd === null || dd === undefined) return { label: "—", cls: "none", hit: "" };
+  if (dd <= -40) return { label: "二段目圏", cls: "red", hit: "hit-red" };
+  if (dd <= -25) return { label: "打診圏", cls: "amber", hit: "hit-amber" };
+  return { label: "—", cls: "none", hit: "" };
+}
+function ddOf(t) {
+  const p = prices[t];
+  return p && typeof p.drawdown_pct === "number" ? p.drawdown_pct : null;
+}
+const heldSet = () => new Set(state.holdings.map(h => h.ticker));
+const fmtYen = n => n.toLocaleString("ja-JP") + "円";
+const fmtDd = dd => dd === null ? "—" : dd.toFixed(1) + "%";
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+/* ================= 監視盤 ================= */
+function renderWatch() {
+  const container = document.getElementById("watch-container");
+  const held = heldSet();
+  let groups = [];
+
+  if (sortMode === "type") {
+    const heldItems = watchlist.filter(w => held.has(w.ticker));
+    if (heldItems.length) groups.push({ label: "★ 保有", items: sortByDd(heldItems) });
+    for (const t of ["A", "B", "C", "D"]) {
+      groups.push({ label: TYPE_LABELS[t], items: watchlist.filter(w => w.type === t) });
+    }
+  } else {
+    const heldItems = watchlist.filter(w => held.has(w.ticker));
+    if (heldItems.length) groups.push({ label: "★ 保有", items: sortByDd(heldItems) });
+    groups.push({ label: "下落率順（全銘柄）", items: sortByDd(watchlist.slice()) });
+  }
+
+  container.innerHTML = groups.map(g => {
+    const rows = g.items.map(w => rowHtml(w, held)).join("");
+    return `<div class="group-label">${esc(g.label)}</div>
+      <table class="watch"><tbody>${rows}</tbody></table>`;
+  }).join("");
+
+  container.querySelectorAll("tr[data-ticker]").forEach(tr => {
+    tr.addEventListener("click", () => {
+      openTicker = (openTicker === tr.dataset.ticker) ? null : tr.dataset.ticker;
+      renderWatch();
+    });
+  });
+  container.querySelectorAll("textarea[data-memo]").forEach(ta => {
+    ta.addEventListener("click", e => e.stopPropagation());
+    ta.addEventListener("input", () => {
+      state.memos[ta.dataset.memo] = ta.value;
+      saveState();
+    });
+  });
+}
+function sortByDd(items) {
+  return items.slice().sort((a, b) => {
+    const da = ddOf(a.ticker), db = ddOf(b.ticker);
+    if (da === null && db === null) return 0;
+    if (da === null) return 1;
+    if (db === null) return -1;
+    return da - db; // 下落が深い順
+  });
+}
+function rowHtml(w, held) {
+  const dd = ddOf(w.ticker);
+  const st = statusOf(dd);
+  const star = held.has(w.ticker) ? `<span class="star">★</span>` : "";
+  let html = `<tr data-ticker="${w.ticker}" class="${st.hit}">
+    <td class="namecell"><span class="nm">${star}${esc(w.name)}</span>
+      <span class="moat">${esc(w.ticker)}｜${esc(w.moat)}</span></td>
+    <td class="ddcell">${fmtDd(dd)}</td>
+    <td class="stcell"><span class="badge ${st.cls}">${st.label}</span></td>
+  </tr>`;
+  if (openTicker === w.ticker) {
+    const p = prices[w.ticker];
+    html += `<tr class="detail-row"><td class="detail" style="display:block;">
+      <dl>
+        <dt>直近終値</dt><dd>${p ? fmtYen(p.close) : "取得失敗"}</dd>
+        <dt>52週高値</dt><dd>${p ? fmtYen(p.high52) : "—"}</dd>
+        <dt>データ日付</dt><dd>${p ? esc(p.asof) : "—"}</dd>
+        <dt>閾値</dt><dd>${w.thresholds.map(t => t + "%").join(" ／ ")}</dd>
+        <dt>見張り項目</dt><dd>${w.watch ? esc(w.watch) : "（型の基本形に従う）"}</dd>
+      </dl>
+      <label class="memo-label">メモ（この端末のみに保存）</label>
+      <textarea data-memo="${w.ticker}">${esc(state.memos[w.ticker] || "")}</textarea>
+    </td></tr>`;
+  }
+  return html;
+}
+
+/* ================= ファイナンス ================= */
+function renderFinance() {
+  document.getElementById("in-monthly").value = state.monthly || "";
+  document.getElementById("in-core").value = state.alloc.core;
+  document.getElementById("in-sat").value = state.alloc.satellite;
+  document.getElementById("in-cash").value = state.alloc.cash;
+  document.getElementById("in-cashbal").value = state.cashBalance || "";
+  document.getElementById("in-satmax").value = state.satMax;
+
+  const sum = Number(state.alloc.core) + Number(state.alloc.satellite) + Number(state.alloc.cash);
+  const sumEl = document.getElementById("alloc-sum");
+  sumEl.textContent = `合計 ${sum}%` + (sum === 100 ? "" : "（100%になっていません）");
+  sumEl.className = sum === 100 ? "note" : "alloc-warn";
+
+  document.getElementById("cash-third").textContent =
+    state.cashBalance > 0 ? fmtYen(Math.floor(state.cashBalance / 3)) : "—";
+
+  // 保有一覧
+  const byTicker = Object.fromEntries(watchlist.map(w => [w.ticker, w]));
+  const ul = document.getElementById("holdings-list");
+  ul.innerHTML = state.holdings.length
+    ? state.holdings.map((h, i) => {
+        const w = byTicker[h.ticker];
+        const nm = w ? w.name : h.ticker;
+        const role = h.role === "satellite" ? "サテライト" : "コア";
+        return `<li><span>${esc(nm)}<span class="note">（${role}）</span></span>
+          <span style="display:flex;align-items:center;gap:4px;">
+            <span class="v" style="font-variant-numeric:tabular-nums;">${fmtYen(h.cost)}</span>
+            <button class="btn danger-ghost" data-del="${i}">削除</button>
+          </span></li>`;
+      }).join("")
+    : `<li class="note" style="border:none;">保有銘柄はまだ登録されていません</li>`;
+  ul.querySelectorAll("button[data-del]").forEach(b => {
+    b.addEventListener("click", () => {
+      const h = state.holdings[Number(b.dataset.del)];
+      const w = byTicker[h.ticker];
+      if (confirm(`${w ? w.name : h.ticker} を保有一覧から削除しますか？`)) {
+        state.holdings.splice(Number(b.dataset.del), 1);
+        saveState(); renderFinance(); renderWatch();
+      }
+    });
+  });
+
+  const total = state.holdings.reduce((s, h) => s + Number(h.cost || 0), 0);
+  const satTotal = state.holdings.filter(h => h.role === "satellite")
+    .reduce((s, h) => s + Number(h.cost || 0), 0);
+  document.getElementById("hold-total").textContent = total ? fmtYen(total) : "—";
+
+  const ratio = total > 0 ? satTotal / total * 100 : 0;
+  const bar = document.getElementById("sat-bar");
+  const over = ratio > Number(state.satMax);
+  bar.classList.toggle("over", over);
+  bar.firstElementChild.style.width = Math.min(100, ratio) + "%";
+  document.getElementById("sat-now").textContent =
+    total > 0 ? `${ratio.toFixed(1)}%（上限 ${state.satMax}%）${over ? " ⚠ 超過" : ""}` : "—";
+}
+
+function bindFinance() {
+  const bind = (id, fn) => document.getElementById(id).addEventListener("change", e => {
+    fn(Number(e.target.value) || 0); saveState(); renderFinance();
+  });
+  bind("in-monthly", v => state.monthly = v);
+  bind("in-core", v => state.alloc.core = v);
+  bind("in-sat", v => state.alloc.satellite = v);
+  bind("in-cash", v => state.alloc.cash = v);
+  bind("in-cashbal", v => state.cashBalance = v);
+  bind("in-satmax", v => state.satMax = v);
+
+  document.getElementById("hold-add-btn").addEventListener("click", () => {
+    const ticker = document.getElementById("hold-ticker").value;
+    const role = document.getElementById("hold-role").value;
+    const cost = Number(document.getElementById("hold-cost").value);
+    if (!ticker || !(cost > 0)) { alert("銘柄と取得額を入力してください"); return; }
+    state.holdings.push({ ticker, role, cost });
+    document.getElementById("hold-cost").value = "";
+    saveState(); renderFinance(); renderWatch();
+  });
+
+  document.getElementById("btn-export").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `edge-dashboard-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  document.getElementById("btn-import").addEventListener("click", () =>
+    document.getElementById("import-file").click());
+  document.getElementById("import-file").addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (typeof data !== "object" || data === null) throw new Error("形式が不正です");
+        state = Object.assign(structuredClone(DEFAULT_STATE), data);
+        saveState(); renderFinance(); renderWatch();
+        alert("インポートしました");
+      } catch (err) {
+        alert("読み込みに失敗しました: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+}
+
+/* ================= タブ・初期化 ================= */
+function bindTabs() {
+  document.querySelectorAll("nav.tabs button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("nav.tabs button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll("section.view").forEach(s => s.classList.remove("active"));
+      document.getElementById("view-" + btn.dataset.view).classList.add("active");
+    });
+  });
+  document.getElementById("sort-type").addEventListener("click", () => setSort("type"));
+  document.getElementById("sort-dd").addEventListener("click", () => setSort("dd"));
+}
+function setSort(mode) {
+  sortMode = mode;
+  document.getElementById("sort-type").classList.toggle("active", mode === "type");
+  document.getElementById("sort-dd").classList.toggle("active", mode === "dd");
+  renderWatch();
+}
+
+async function loadData() {
+  const [wl, pr] = await Promise.all([
+    fetch("data/watchlist.json").then(r => r.json()),
+    fetch("data/prices.json").then(r => r.json()).catch(() => null)
+  ]);
+  watchlist = wl;
+  if (pr && pr.prices) {
+    prices = pr.prices;
+    document.getElementById("asof").textContent = `価格: ${pr.generated_at.slice(0, 16).replace("T", " ")} 時点`;
+  } else {
+    document.getElementById("asof").textContent = "価格データ未取得";
+  }
+  const sel = document.getElementById("hold-ticker");
+  sel.innerHTML = `<option value="">銘柄を選択</option>` +
+    watchlist.map(w => `<option value="${w.ticker}">${esc(w.name)}（${w.ticker}）</option>`).join("");
+}
+
+async function init() {
+  bindTabs();
+  bindFinance();
+  try {
+    await loadData();
+  } catch (e) {
+    document.getElementById("asof").textContent = "データ読込エラー";
+  }
+  renderWatch();
+  renderFinance();
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+}
+init();
+</script>
+</body>
+</html>
