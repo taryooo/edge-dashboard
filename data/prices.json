@@ -1,234 +1,234 @@
 {
-  "generated_at": "2026-10-21T22:09:27+09:00",
+  "generated_at": "2026-10-22T22:09:53+09:00",
   "source": "Yahoo Finance (yfinance)",
   "prices": {
     "4063": {
-      "close": 5882.0,
+      "close": 5804.0,
       "high52": 7930.0,
-      "drawdown_pct": -25.83,
-      "asof": "2026-10-21"
+      "drawdown_pct": -26.81,
+      "asof": "2026-10-22"
     },
     "3436": {
-      "close": 2579.5,
+      "close": 2386.5,
       "high52": 5939.0,
-      "drawdown_pct": -56.57,
-      "asof": "2026-10-21"
+      "drawdown_pct": -59.82,
+      "asof": "2026-10-22"
     },
     "4186": {
-      "close": 8291.0,
+      "close": 7802.0,
       "high52": 12925.0,
-      "drawdown_pct": -35.85,
-      "asof": "2026-10-21"
+      "drawdown_pct": -39.64,
+      "asof": "2026-10-22"
     },
     "7741": {
-      "close": 26505.0,
+      "close": 26380.0,
       "high52": 30400.0,
-      "drawdown_pct": -12.81,
-      "asof": "2026-10-21"
+      "drawdown_pct": -13.22,
+      "asof": "2026-10-22"
     },
     "8035": {
-      "close": 10160.0,
+      "close": 9450.0,
       "high52": 16252.0,
-      "drawdown_pct": -37.48,
-      "asof": "2026-10-21"
+      "drawdown_pct": -41.85,
+      "asof": "2026-10-22"
     },
     "6146": {
-      "close": 53570.0,
+      "close": 51230.0,
       "high52": 91680.0,
-      "drawdown_pct": -41.57,
-      "asof": "2026-10-21"
+      "drawdown_pct": -44.12,
+      "asof": "2026-10-22"
     },
     "4109": {
-      "close": 4845.0,
+      "close": 4670.0,
       "high52": 8100.0,
-      "drawdown_pct": -40.19,
-      "asof": "2026-10-21"
+      "drawdown_pct": -42.35,
+      "asof": "2026-10-22"
     },
     "5384": {
-      "close": 3275.0,
+      "close": 3120.0,
       "high52": 5090.0,
-      "drawdown_pct": -35.66,
-      "asof": "2026-10-21"
+      "drawdown_pct": -38.7,
+      "asof": "2026-10-22"
     },
     "4004": {
-      "close": 14605.0,
+      "close": 12975.0,
       "high52": 20495.0,
-      "drawdown_pct": -28.74,
-      "asof": "2026-10-21"
+      "drawdown_pct": -36.69,
+      "asof": "2026-10-22"
     },
     "2802": {
-      "close": 5278.0,
+      "close": 5046.0,
       "high52": 6340.0,
-      "drawdown_pct": -16.75,
-      "asof": "2026-10-21"
+      "drawdown_pct": -20.41,
+      "asof": "2026-10-22"
     },
     "7751": {
-      "close": 4816.0,
+      "close": 4898.0,
       "high52": 5033.0,
-      "drawdown_pct": -4.31,
-      "asof": "2026-10-21"
+      "drawdown_pct": -2.68,
+      "asof": "2026-10-22"
     },
     "6920": {
-      "close": 39770.0,
+      "close": 37250.0,
       "high52": 58580.0,
-      "drawdown_pct": -32.11,
-      "asof": "2026-10-21"
+      "drawdown_pct": -36.41,
+      "asof": "2026-10-22"
     },
     "6965": {
-      "close": 2128.5,
+      "close": 2086.5,
       "high52": 3100.0,
-      "drawdown_pct": -31.34,
-      "asof": "2026-10-21"
+      "drawdown_pct": -32.69,
+      "asof": "2026-10-22"
     },
     "6981": {
-      "close": 6756.0,
+      "close": 6432.0,
       "high52": 12895.0,
-      "drawdown_pct": -47.61,
-      "asof": "2026-10-21"
+      "drawdown_pct": -50.12,
+      "asof": "2026-10-22"
     },
     "6273": {
-      "close": 66360.0,
+      "close": 63570.0,
       "high52": 86800.0,
-      "drawdown_pct": -23.55,
-      "asof": "2026-10-21"
+      "drawdown_pct": -26.76,
+      "asof": "2026-10-22"
     },
     "5333": {
-      "close": 4981.0,
+      "close": 4703.0,
       "high52": 7894.0,
-      "drawdown_pct": -36.9,
-      "asof": "2026-10-21"
+      "drawdown_pct": -40.42,
+      "asof": "2026-10-22"
     },
     "7733": {
-      "close": 1698.5,
+      "close": 1683.0,
       "high52": 2210.5,
-      "drawdown_pct": -23.16,
-      "asof": "2026-10-21"
+      "drawdown_pct": -23.86,
+      "asof": "2026-10-22"
     },
     "3402": {
-      "close": 1215.0,
+      "close": 1188.5,
       "high52": 1395.0,
-      "drawdown_pct": -12.9,
-      "asof": "2026-10-21"
+      "drawdown_pct": -14.8,
+      "asof": "2026-10-22"
     },
     "5631": {
-      "close": 6460.0,
+      "close": 6251.0,
       "high52": 10620.0,
-      "drawdown_pct": -39.17,
-      "asof": "2026-10-21"
+      "drawdown_pct": -41.14,
+      "asof": "2026-10-22"
     },
     "7309": {
-      "close": 18495.0,
+      "close": 18370.0,
       "high52": 21530.0,
-      "drawdown_pct": -14.1,
-      "asof": "2026-10-21"
+      "drawdown_pct": -14.68,
+      "asof": "2026-10-22"
     },
     "6324": {
-      "close": 5390.0,
+      "close": 4875.0,
       "high52": 9150.0,
-      "drawdown_pct": -41.09,
-      "asof": "2026-10-21"
+      "drawdown_pct": -46.72,
+      "asof": "2026-10-22"
     },
     "6268": {
-      "close": 4357.0,
+      "close": 4166.0,
       "high52": 6113.0,
-      "drawdown_pct": -28.73,
-      "asof": "2026-10-21"
+      "drawdown_pct": -31.85,
+      "asof": "2026-10-22"
     },
     "6954": {
-      "close": 5823.0,
+      "close": 5624.0,
       "high52": 8880.0,
-      "drawdown_pct": -34.43,
-      "asof": "2026-10-21"
+      "drawdown_pct": -36.67,
+      "asof": "2026-10-22"
     },
     "6503": {
-      "close": 4947.0,
+      "close": 4881.0,
       "high52": 6686.0,
-      "drawdown_pct": -26.01,
-      "asof": "2026-10-21"
+      "drawdown_pct": -27.0,
+      "asof": "2026-10-22"
     },
     "7011": {
-      "close": 3721.0,
+      "close": 3688.0,
       "high52": 5208.0,
-      "drawdown_pct": -28.55,
-      "asof": "2026-10-21"
+      "drawdown_pct": -29.19,
+      "asof": "2026-10-22"
     },
     "7013": {
-      "close": 2505.0,
+      "close": 2451.5,
       "high52": 4698.0,
-      "drawdown_pct": -46.68,
-      "asof": "2026-10-21"
+      "drawdown_pct": -47.82,
+      "asof": "2026-10-22"
     },
     "6701": {
-      "close": 5384.0,
+      "close": 5553.0,
       "high52": 6194.0,
-      "drawdown_pct": -13.08,
-      "asof": "2026-10-21"
+      "drawdown_pct": -10.35,
+      "asof": "2026-10-22"
     },
     "7012": {
-      "close": 2242.0,
+      "close": 2182.0,
       "high52": 3766.0,
-      "drawdown_pct": -40.47,
-      "asof": "2026-10-21"
+      "drawdown_pct": -42.06,
+      "asof": "2026-10-22"
     },
     "8058": {
-      "close": 4746.0,
+      "close": 4795.0,
       "high52": 6012.0,
-      "drawdown_pct": -21.06,
-      "asof": "2026-10-21"
+      "drawdown_pct": -20.24,
+      "asof": "2026-10-22"
     },
     "8031": {
-      "close": 4979.0,
+      "close": 4982.0,
       "high52": 6675.0,
-      "drawdown_pct": -25.41,
-      "asof": "2026-10-21"
+      "drawdown_pct": -25.36,
+      "asof": "2026-10-22"
     },
     "8001": {
-      "close": 2304.0,
+      "close": 2327.0,
       "high52": 2399.0,
-      "drawdown_pct": -3.96,
-      "asof": "2026-10-21"
+      "drawdown_pct": -3.0,
+      "asof": "2026-10-22"
     },
     "8053": {
-      "close": 1731.5,
+      "close": 1702.5,
       "high52": 1943.8,
-      "drawdown_pct": -10.92,
-      "asof": "2026-10-21"
+      "drawdown_pct": -12.41,
+      "asof": "2026-10-22"
     },
     "8002": {
-      "close": 4952.0,
+      "close": 4960.0,
       "high52": 6328.0,
-      "drawdown_pct": -21.74,
-      "asof": "2026-10-21"
+      "drawdown_pct": -21.62,
+      "asof": "2026-10-22"
     },
     "6857": {
-      "close": 34440.0,
+      "close": 32370.0,
       "high52": 41990.0,
-      "drawdown_pct": -17.98,
-      "asof": "2026-10-21"
+      "drawdown_pct": -22.91,
+      "asof": "2026-10-22"
     },
     "6951": {
-      "close": 7076.0,
+      "close": 6896.0,
       "high52": 9255.0,
-      "drawdown_pct": -23.54,
-      "asof": "2026-10-21"
+      "drawdown_pct": -25.49,
+      "asof": "2026-10-22"
     },
     "7701": {
-      "close": 4329.0,
+      "close": 4304.0,
       "high52": 4540.0,
-      "drawdown_pct": -4.65,
-      "asof": "2026-10-21"
+      "drawdown_pct": -5.2,
+      "asof": "2026-10-22"
     },
     "4901": {
-      "close": 3391.0,
+      "close": 3403.0,
       "high52": 3908.0,
-      "drawdown_pct": -13.23,
-      "asof": "2026-10-21"
+      "drawdown_pct": -12.92,
+      "asof": "2026-10-22"
     },
     "4568": {
-      "close": 2841.0,
-      "high52": 4170.0,
-      "drawdown_pct": -31.87,
-      "asof": "2026-10-21"
+      "close": 2836.5,
+      "high52": 4152.0,
+      "drawdown_pct": -31.68,
+      "asof": "2026-10-22"
     }
   }
 }
